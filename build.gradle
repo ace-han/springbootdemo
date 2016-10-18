@@ -1,19 +1,39 @@
 buildscript {
 	ext {
 		springBootVersion = '1.4.1.RELEASE'
+		querydslPluginVersion = '1.0.7'
+		querydslVersion = '3.7.4'
 	}
 	repositories {
 		mavenCentral()
+		maven {
+	      url "https://plugins.gradle.org/m2/"
+	    }
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:${querydslPluginVersion}"
 	}
 }
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
+apply plugin: 'com.ewerk.gradle.plugins.querydsl'
+
+querydsl {
+  // library = "com.querydsl:querydsl-apt:$querydslVersion" // default is already com.querydsl:querydsl-apt:4.1.3
+  querydslSourcesDir = 'src/main/generated-sources' // all meta model classes will be created within this directory
+  jpa = true
+  jdo = false
+  hibernate = false
+  morphia = false
+  roo = false
+  springDataMongo = false
+  querydslDefault = false
+}
 
 
 war {
@@ -32,13 +52,17 @@ configurations {
 }
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-aop')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-data-rest')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('org.springframework.boot:spring-boot-starter-validation')
-	compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-starter-jetty")
-    compile('mysql:mysql-connector-java')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile 'org.springframework.boot:spring-boot-starter-aop'
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile 'org.springframework.boot:spring-boot-starter-data-rest'
+	compile 'org.springframework.boot:spring-boot-starter-security'
+	compile 'org.springframework.boot:spring-boot-starter-validation'
+	compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-jetty'
+	compile 'mysql:mysql-connector-java'
+	compile "com.mysema.querydsl:querydsl-core:${querydslVersion}" // double quote could be interpolated, single won't
+	compile "com.mysema.querydsl:querydsl-jpa:${querydslVersion}"
+    compile "com.mysema.querydsl:querydsl-apt:${querydslVersion}"
+    
+	testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
